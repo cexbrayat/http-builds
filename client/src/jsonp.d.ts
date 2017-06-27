@@ -10,6 +10,8 @@ export declare const JSONP_ERR_WRONG_RESPONSE_TYPE = "JSONP requests must use Js
  * DI token/abstract type representing a map of JSONP callbacks.
  *
  * In the browser, this should always be the `window` object.
+ *
+ * @experimental
  */
 export declare abstract class JsonpCallbackMap {
     [key: string]: (data: any) => void;
@@ -17,6 +19,8 @@ export declare abstract class JsonpCallbackMap {
 /**
  * {@link HttpBackend} that only processes {@link HttpRequest} with the JSONP method,
  * by performing JSONP style requests.
+ *
+ * @experimental
  */
 export declare class JsonpClientBackend implements HttpBackend {
     private callbackMap;
@@ -34,6 +38,8 @@ export declare class JsonpClientBackend implements HttpBackend {
 /**
  * An {@Link HttpInterceptor} which identifies requests with the method JSONP and
  * shifts them to the {@link JsonpClientBackend}.
+ *
+ * @experimental
  */
 export declare class JsonpInterceptor {
     private jsonp;

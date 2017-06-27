@@ -1,5 +1,5 @@
 /**
- * @license Angular v4.2.2-0495b72f6c
+ * @license Angular v4.2.2-350f3a8b49
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -19,6 +19,7 @@ import { Observable } from 'rxjs/Observable';
  * found in the LICENSE file at https://angular.io/license
  */
 /**
+ * \@experimental
  * @abstract
  */
 class HttpHandler {
@@ -30,6 +31,7 @@ class HttpHandler {
     handle(req) { }
 }
 /**
+ * \@experimental
  * @abstract
  */
 class HttpBackend {
@@ -42,11 +44,7 @@ class HttpBackend {
 }
 
 /**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * \@experimental
  */
 const HTTP_HEADERS_SEALED_ERR = 'Headers have been sealed and cannot be mutated.';
 /**
@@ -360,6 +358,8 @@ function isFormData(value) {
  * headers, body, and other request configuration options. Instances should be
  * assumed to be immutable. To modify a {\@link HttpRequest}, the {\@link HttpRequest#clone}
  * method should be used.
+ *
+ * \@experimental
  */
 class HttpRequest {
     /**
@@ -557,6 +557,8 @@ HttpEventType[HttpEventType.Response] = "Response";
 HttpEventType[HttpEventType.User] = "User";
 /**
  * Base class for both {\@link HttpResponse} and {\@link HttpHeaderResponse}.
+ *
+ * \@experimental
  * @abstract
  */
 class HttpResponseBase {
@@ -588,6 +590,8 @@ class HttpResponseBase {
  *
  * {\@link HttpHeaderResponse} is a {\@link HttpEvent} available on the response
  * event stream, only when progress events are requested.
+ *
+ * \@experimental
  */
 class HttpHeaderResponse extends HttpResponseBase {
     /**
@@ -621,6 +625,8 @@ class HttpHeaderResponse extends HttpResponseBase {
  *
  * {\@link HttpResponse} is a {\@link HttpEvent} available on the response event
  * stream.
+ *
+ * \@experimental
  */
 class HttpResponse extends HttpResponseBase {
     /**
@@ -656,6 +662,8 @@ class HttpResponse extends HttpResponseBase {
  * the state of the HTTP layer when the error occurred. The error property
  * will contain either a wrapped Error object or the error response returned
  * from the server.
+ *
+ * \@experimental
  */
 class HttpErrorResponse extends HttpResponseBase {
     /**
@@ -707,6 +715,11 @@ function addBody(options, body) {
         withCredentials: options.withCredentials,
     };
 }
+/**
+ * The main API for making outgoing HTTP requests.
+ *
+ * \@experimental
+ */
 class HttpClient {
     /**
      * @param {?} handler
@@ -946,6 +959,8 @@ HttpClient.ctorParameters = () => [
  */
 /**
  * {\@link HttpHandler} which applies an {\@link HttpInterceptor} to an {\@link HttpRequest}.
+ *
+ * \@experimental
  */
 class HttpInterceptorHandler {
     /**
@@ -967,6 +982,8 @@ class HttpInterceptorHandler {
 /**
  * A multi-provider token which represents the array of {\@link HttpInterceptor}s that
  * are registered.
+ *
+ * \@experimental
  */
 const HTTP_INTERCEPTORS = new InjectionToken('HTTP_INTERCEPTORS');
 
@@ -995,6 +1012,8 @@ const JSONP_ERR_WRONG_RESPONSE_TYPE = 'JSONP requests must use Json response typ
  * DI token/abstract type representing a map of JSONP callbacks.
  *
  * In the browser, this should always be the `window` object.
+ *
+ * \@experimental
  * @abstract
  */
 class JsonpCallbackMap {
@@ -1002,6 +1021,8 @@ class JsonpCallbackMap {
 /**
  * {\@link HttpBackend} that only processes {\@link HttpRequest} with the JSONP method,
  * by performing JSONP style requests.
+ *
+ * \@experimental
  */
 class JsonpClientBackend {
     /**
@@ -1158,6 +1179,8 @@ JsonpClientBackend.ctorParameters = () => [
 /**
  * An {\@Link HttpInterceptor} which identifies requests with the method JSONP and
  * shifts them to the {\@link JsonpClientBackend}.
+ *
+ * \@experimental
  */
 class JsonpInterceptor {
     /**
@@ -1213,6 +1236,9 @@ function getResponseUrl(xhr) {
     return null;
 }
 /**
+ * A wrapper around the `XMLHttpRequest` constructor.
+ *
+ * \@experimental
  * @abstract
  */
 class XhrFactory {
@@ -1224,6 +1250,8 @@ class XhrFactory {
 }
 /**
  * A factory for \@{link HttpXhrBackend} that uses the `XMLHttpRequest` browser API.
+ *
+ * \@experimental
  */
 class BrowserXhr {
     constructor() { }
@@ -1242,6 +1270,8 @@ BrowserXhr.ctorParameters = () => [];
 /**
  * An {\@link HttpBackend} which uses the XMLHttpRequest API to send
  * requests to a backend server.
+ *
+ * \@experimental
  */
 class HttpXhrBackend {
     /**
@@ -1494,6 +1524,8 @@ HttpXhrBackend.ctorParameters = () => [
  * to a request before passing it to the given {\@link HttpBackend}.
  *
  * Meant to be used as a factory function within {\@link HttpClientModule}.
+ *
+ * \@experimental
  * @param {?} backend
  * @param {?=} interceptors
  * @return {?}
@@ -1509,6 +1541,8 @@ function interceptingHandler(backend, interceptors = []) {
  *
  * Ordinarily JSONP callbacks are stored on the `window` object, but this may not exist
  * in test environments. In that case, callbacks are stored on an anonymous object instead.
+ *
+ * \@experimental
  * @return {?}
  */
 function jsonpCallbackMap() {
@@ -1523,6 +1557,8 @@ function jsonpCallbackMap() {
  *
  * Interceptors can be added to the chain behind {\@link HttpClient} by binding them
  * to the multiprovider for {\@link HTTP_INTERCEPTORS}.
+ *
+ * \@experimental
  */
 class HttpClientModule {
 }
@@ -1553,6 +1589,8 @@ HttpClientModule.ctorParameters = () => [];
  *
  * Without this module, {\@link HttpClient#jsonp} requests will reach the backend
  * with method JSONP, where they'll be rejected.
+ *
+ * \@experimental
  */
 class HttpClientJsonpModule {
 }
@@ -1561,7 +1599,7 @@ HttpClientJsonpModule.decorators = [
                 providers: [
                     JsonpClientBackend,
                     { provide: JsonpCallbackMap, useFactory: jsonpCallbackMap },
-                    { provide: HTTP_INTERCEPTORS, useValue: JsonpInterceptor, multi: true },
+                    { provide: HTTP_INTERCEPTORS, useClass: JsonpInterceptor, multi: true },
                 ],
             },] },
 ];

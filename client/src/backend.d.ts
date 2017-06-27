@@ -8,9 +8,15 @@
 import { Observable } from 'rxjs/Observable';
 import { HttpRequest } from './request';
 import { HttpEvent } from './response';
+/**
+ * @experimental
+ */
 export declare abstract class HttpHandler {
     abstract handle(req: HttpRequest<any>): Observable<HttpEvent<any>>;
 }
+/**
+ * @experimental
+ */
 export declare abstract class HttpBackend implements HttpHandler {
     abstract handle(req: HttpRequest<any>): Observable<HttpEvent<any>>;
 }

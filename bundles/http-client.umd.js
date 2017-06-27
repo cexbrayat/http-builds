@@ -1,16 +1,16 @@
 /**
- * @license Angular v4.2.2-0495b72f6c
+ * @license Angular v4.2.2-350f3a8b49
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('tslib'), require('@angular/core'), require('rxjs/observable/of'), require('rxjs/operator/concatMap'), require('rxjs/operator/filter'), require('rxjs/operator/map'), require('@angular/platform-browser'), require('rxjs/Observable')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'tslib', '@angular/core', 'rxjs/observable/of', 'rxjs/operator/concatMap', 'rxjs/operator/filter', 'rxjs/operator/map', '@angular/platform-browser', 'rxjs/Observable'], factory) :
-	(factory((global.ng = global.ng || {}, global.ng.httpClient = global.ng.httpClient || {}),global.tslib_1,global.ng.core,global.rxjs_observable_of,global.rxjs_operator_concatMap,global.rxjs_operator_filter,global.rxjs_operator_map,global.ng.platformBrowser,global.Rx));
+	(factory((global.ng = global.ng || {}, global.ng.http = global.ng.http || {}, global.ng.http.client = global.ng.http.client || {}),global.tslib_1,global.ng.core,global.rxjs_observable_of,global.rxjs_operator_concatMap,global.rxjs_operator_filter,global.rxjs_operator_map,global.ng.platformBrowser,global.Rx));
 }(this, (function (exports,tslib_1,_angular_core,rxjs_observable_of,rxjs_operator_concatMap,rxjs_operator_filter,rxjs_operator_map,_angular_platformBrowser,rxjs_Observable) { 'use strict';
 
 /**
- * @license Angular v4.2.2-0495b72f6c
+ * @license Angular v4.2.2-350f3a8b49
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -22,6 +22,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
+ * \@experimental
  * @abstract
  */
 var HttpHandler = (function () {
@@ -36,6 +37,7 @@ var HttpHandler = (function () {
     return HttpHandler;
 }());
 /**
+ * \@experimental
  * @abstract
  */
 var HttpBackend = (function () {
@@ -50,11 +52,7 @@ var HttpBackend = (function () {
     return HttpBackend;
 }());
 /**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * \@experimental
  */
 var HTTP_HEADERS_SEALED_ERR = 'Headers have been sealed and cannot be mutated.';
 /**
@@ -371,6 +369,8 @@ function isFormData(value) {
  * headers, body, and other request configuration options. Instances should be
  * assumed to be immutable. To modify a {\@link HttpRequest}, the {\@link HttpRequest#clone}
  * method should be used.
+ *
+ * \@experimental
  */
 var HttpRequest = (function () {
     /**
@@ -569,6 +569,8 @@ HttpEventType[HttpEventType.Response] = "Response";
 HttpEventType[HttpEventType.User] = "User";
 /**
  * Base class for both {\@link HttpResponse} and {\@link HttpHeaderResponse}.
+ *
+ * \@experimental
  * @abstract
  */
 var HttpResponseBase = (function () {
@@ -603,6 +605,8 @@ var HttpResponseBase = (function () {
  *
  * {\@link HttpHeaderResponse} is a {\@link HttpEvent} available on the response
  * event stream, only when progress events are requested.
+ *
+ * \@experimental
  */
 var HttpHeaderResponse = (function (_super) {
     tslib_1.__extends(HttpHeaderResponse, _super);
@@ -641,6 +645,8 @@ var HttpHeaderResponse = (function (_super) {
  *
  * {\@link HttpResponse} is a {\@link HttpEvent} available on the response event
  * stream.
+ *
+ * \@experimental
  */
 var HttpResponse = (function (_super) {
     tslib_1.__extends(HttpResponse, _super);
@@ -681,6 +687,8 @@ var HttpResponse = (function (_super) {
  * the state of the HTTP layer when the error occurred. The error property
  * will contain either a wrapped Error object or the error response returned
  * from the server.
+ *
+ * \@experimental
  */
 var HttpErrorResponse = (function (_super) {
     tslib_1.__extends(HttpErrorResponse, _super);
@@ -735,6 +743,11 @@ function addBody(options, body) {
         withCredentials: options.withCredentials,
     };
 }
+/**
+ * The main API for making outgoing HTTP requests.
+ *
+ * \@experimental
+ */
 var HttpClient = (function () {
     /**
      * @param {?} handler
@@ -983,6 +996,8 @@ HttpClient.ctorParameters = function () { return [
  */
 /**
  * {\@link HttpHandler} which applies an {\@link HttpInterceptor} to an {\@link HttpRequest}.
+ *
+ * \@experimental
  */
 var HttpInterceptorHandler = (function () {
     /**
@@ -1005,6 +1020,8 @@ var HttpInterceptorHandler = (function () {
 /**
  * A multi-provider token which represents the array of {\@link HttpInterceptor}s that
  * are registered.
+ *
+ * \@experimental
  */
 var HTTP_INTERCEPTORS = new _angular_core.InjectionToken('HTTP_INTERCEPTORS');
 /**
@@ -1031,6 +1048,8 @@ var JSONP_ERR_WRONG_RESPONSE_TYPE = 'JSONP requests must use Json response type.
  * DI token/abstract type representing a map of JSONP callbacks.
  *
  * In the browser, this should always be the `window` object.
+ *
+ * \@experimental
  * @abstract
  */
 var JsonpCallbackMap = (function () {
@@ -1041,6 +1060,8 @@ var JsonpCallbackMap = (function () {
 /**
  * {\@link HttpBackend} that only processes {\@link HttpRequest} with the JSONP method,
  * by performing JSONP style requests.
+ *
+ * \@experimental
  */
 var JsonpClientBackend = (function () {
     /**
@@ -1199,6 +1220,8 @@ JsonpClientBackend.ctorParameters = function () { return [
 /**
  * An {\@Link HttpInterceptor} which identifies requests with the method JSONP and
  * shifts them to the {\@link JsonpClientBackend}.
+ *
+ * \@experimental
  */
 var JsonpInterceptor = (function () {
     /**
@@ -1254,6 +1277,9 @@ function getResponseUrl(xhr) {
     return null;
 }
 /**
+ * A wrapper around the `XMLHttpRequest` constructor.
+ *
+ * \@experimental
  * @abstract
  */
 var XhrFactory = (function () {
@@ -1268,6 +1294,8 @@ var XhrFactory = (function () {
 }());
 /**
  * A factory for \@{link HttpXhrBackend} that uses the `XMLHttpRequest` browser API.
+ *
+ * \@experimental
  */
 var BrowserXhr = (function () {
     function BrowserXhr() {
@@ -1288,6 +1316,8 @@ BrowserXhr.ctorParameters = function () { return []; };
 /**
  * An {\@link HttpBackend} which uses the XMLHttpRequest API to send
  * requests to a backend server.
+ *
+ * \@experimental
  */
 var HttpXhrBackend = (function () {
     /**
@@ -1541,6 +1571,8 @@ HttpXhrBackend.ctorParameters = function () { return [
  * to a request before passing it to the given {\@link HttpBackend}.
  *
  * Meant to be used as a factory function within {\@link HttpClientModule}.
+ *
+ * \@experimental
  * @param {?} backend
  * @param {?=} interceptors
  * @return {?}
@@ -1557,6 +1589,8 @@ function interceptingHandler(backend, interceptors) {
  *
  * Ordinarily JSONP callbacks are stored on the `window` object, but this may not exist
  * in test environments. In that case, callbacks are stored on an anonymous object instead.
+ *
+ * \@experimental
  * @return {?}
  */
 function jsonpCallbackMap() {
@@ -1571,6 +1605,8 @@ function jsonpCallbackMap() {
  *
  * Interceptors can be added to the chain behind {\@link HttpClient} by binding them
  * to the multiprovider for {\@link HTTP_INTERCEPTORS}.
+ *
+ * \@experimental
  */
 var HttpClientModule = (function () {
     function HttpClientModule() {
@@ -1604,6 +1640,8 @@ HttpClientModule.ctorParameters = function () { return []; };
  *
  * Without this module, {\@link HttpClient#jsonp} requests will reach the backend
  * with method JSONP, where they'll be rejected.
+ *
+ * \@experimental
  */
 var HttpClientJsonpModule = (function () {
     function HttpClientJsonpModule() {
@@ -1615,7 +1653,7 @@ HttpClientJsonpModule.decorators = [
                 providers: [
                     JsonpClientBackend,
                     { provide: JsonpCallbackMap, useFactory: jsonpCallbackMap },
-                    { provide: HTTP_INTERCEPTORS, useValue: JsonpInterceptor, multi: true },
+                    { provide: HTTP_INTERCEPTORS, useClass: JsonpInterceptor, multi: true },
                 ],
             },] },
 ];

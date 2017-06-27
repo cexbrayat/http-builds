@@ -8,29 +8,41 @@
 import { HttpHeaders } from './headers';
 /**
  * Represents an HTTP request body when serialized for the server.
+ *
+ * @experimental
  */
 export declare type HttpSerializedBody = ArrayBuffer | Blob | FormData | string;
 /**
  * A subset of the allowed values for `XMLHttpRequest.responseType` supported by
  * {@link HttpClient}.
+ *
+ * @experimental
  */
 export declare type HttpResponseType = 'arraybuffer' | 'blob' | 'json' | 'text';
 /**
  * A type capturing HTTP methods which don't take request bodies.
+ *
+ * @experimental
  */
 export declare type HttpNoBodyMethod = 'DELETE' | 'GET' | 'HEAD' | 'JSONP' | 'OPTIONS';
 /**
  * A type capturing HTTP methods which do take request bodies.
+ *
+ * @experimental
  */
 export declare type HttpBodyMethod = 'POST' | 'PUT' | 'PATCH';
 /**
  * A type representing all (known) HTTP methods.
+ *
+ * @experimental
  */
 export declare type HttpMethod = HttpBodyMethod | HttpNoBodyMethod;
 /**
  * Construction interface for {@link HttpRequest}s.
  *
  * All values are optional and will override default values if provided.
+ *
+ * @experimental
  */
 export interface HttpRequestInit {
     headers?: HttpHeaders;
@@ -43,6 +55,8 @@ export interface HttpRequestInit {
  *
  * All values are optional and will be cloned from the base request if not
  * provided.
+ *
+ * @experimental
  */
 export interface HttpRequestClone<T> extends HttpRequestInit {
     body?: T | null;
@@ -59,6 +73,8 @@ export interface HttpRequestClone<T> extends HttpRequestInit {
  * headers, body, and other request configuration options. Instances should be
  * assumed to be immutable. To modify a {@link HttpRequest}, the {@link HttpRequest#clone}
  * method should be used.
+ *
+ * @experimental
  */
 export declare class HttpRequest<T> {
     readonly url: string;

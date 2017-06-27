@@ -1,6 +1,6 @@
 import * as tslib_1 from "tslib";
 /**
- * @license Angular v4.2.2-0495b72f6c
+ * @license Angular v4.2.2-350f3a8b49
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -8,11 +8,7 @@ import { Injectable, NgModule, Version } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ɵgetDOM } from '@angular/platform-browser';
 /**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * \@experimental
  */
 var HTTP_HEADERS_SEALED_ERR = 'Headers have been sealed and cannot be mutated.';
 /**
@@ -2242,7 +2238,7 @@ JsonpModule.ctorParameters = function () { return []; };
 /**
  * \@stable
  */
-var VERSION = new Version('4.2.2-0495b72f6c');
+var VERSION = new Version('4.2.2-350f3a8b49');
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.

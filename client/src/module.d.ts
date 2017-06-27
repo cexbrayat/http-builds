@@ -5,6 +5,8 @@ import { HttpInterceptor } from './interceptor';
  * to a request before passing it to the given {@link HttpBackend}.
  *
  * Meant to be used as a factory function within {@link HttpClientModule}.
+ *
+ * @experimental
  */
 export declare function interceptingHandler(backend: HttpBackend, interceptors?: HttpInterceptor[] | null): HttpHandler;
 /**
@@ -12,6 +14,8 @@ export declare function interceptingHandler(backend: HttpBackend, interceptors?:
  *
  * Ordinarily JSONP callbacks are stored on the `window` object, but this may not exist
  * in test environments. In that case, callbacks are stored on an anonymous object instead.
+ *
+ * @experimental
  */
 export declare function jsonpCallbackMap(): Object;
 /**
@@ -19,6 +23,8 @@ export declare function jsonpCallbackMap(): Object;
  *
  * Interceptors can be added to the chain behind {@link HttpClient} by binding them
  * to the multiprovider for {@link HTTP_INTERCEPTORS}.
+ *
+ * @experimental
  */
 export declare class HttpClientModule {
 }
@@ -27,6 +33,8 @@ export declare class HttpClientModule {
  *
  * Without this module, {@link HttpClient#jsonp} requests will reach the backend
  * with method JSONP, where they'll be rejected.
+ *
+ * @experimental
  */
 export declare class HttpClientJsonpModule {
 }

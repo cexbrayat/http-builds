@@ -5,6 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+/**
+ * @experimental
+ */
 export declare const HTTP_HEADERS_SEALED_ERR = "Headers have been sealed and cannot be mutated.";
 /**
  * Polyfill for [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers), as
