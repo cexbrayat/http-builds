@@ -1,6 +1,7 @@
-import { Headers, URLSearchParams } from './client';
 import { RequestMethod, ResponseContentType } from './enums';
+import { Headers } from './headers';
 import { RequestOptionsArgs } from './interfaces';
+import { URLSearchParams } from './url_search_params';
 /**
  * Creates a request options object to be optionally provided when instantiating a
  * {@link Request}.

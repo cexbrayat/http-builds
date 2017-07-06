@@ -1,5 +1,5 @@
 /**
- * @license Angular v4.2.2-350f3a8b49
+ * @license Angular v4.3.0-beta.1-7cf4e7c0a5
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -8,491 +8,33 @@ import { Observable } from 'rxjs/Observable';
 import { ɵgetDOM } from '@angular/platform-browser';
 
 /**
- * \@experimental
- */
-const HTTP_HEADERS_SEALED_ERR = 'Headers have been sealed and cannot be mutated.';
-/**
- * Polyfill for [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers), as
- * specified in the [Fetch Spec](https://fetch.spec.whatwg.org/#headers-class).
- *
- * The only known difference between this `Headers` implementation and the spec is the
- * lack of an `entries` method.
- *
- * ### Example
- *
- * ```
- * import {Headers} from '\@angular/http';
- *
- * var firstHeaders = new Headers();
- * firstHeaders.append('Content-Type', 'image/jpeg');
- * console.log(firstHeaders.get('Content-Type')) //'image/jpeg'
- *
- * // Create headers from Plain Old JavaScript Object
- * var secondHeaders = new Headers({
- *   'X-My-Custom-Header': 'Angular'
- * });
- * console.log(secondHeaders.get('X-My-Custom-Header')); //'Angular'
- *
- * var thirdHeaders = new Headers(secondHeaders);
- * console.log(thirdHeaders.get('X-My-Custom-Header')); //'Angular'
- * ```
- *
- * \@experimental
- */
-class HttpHeaders {
-    /**
-     * @param {?=} headers
-     */
-    constructor(headers) {
-        /**
-         * \@internal header names are lower case
-         */
-        this._headers = new Map();
-        /**
-         * \@internal map lower case names to actual names
-         */
-        this._normalizedNames = new Map();
-        this._lazyInit = null;
-        /**
-         * \@internal
-         */
-        this.sealed = false;
-        if (!headers) {
-            return;
-        }
-        if (headers instanceof HttpHeaders) {
-            headers.forEach((values, name) => {
-                values.forEach(value => this.append(name, value));
-            });
-            return;
-        }
-        Object.keys(headers).forEach((name) => {
-            const values = Array.isArray(headers[name]) ? headers[name] : [headers[name]];
-            this.delete(name);
-            values.forEach(value => this.append(name, value));
-        });
-    }
-    /**
-     * Returns a new Headers instance from the given DOMString of Response Headers
-     * @param {?} headersString
-     * @return {?}
-     */
-    static fromResponseHeaderString(headersString) {
-        const /** @type {?} */ headers = new HttpHeaders();
-        headers._lazyInit = () => {
-            headersString.split('\n').forEach(line => {
-                const /** @type {?} */ index = line.indexOf(':');
-                if (index > 0) {
-                    const /** @type {?} */ name = line.slice(0, index);
-                    const /** @type {?} */ value = line.slice(index + 1).trim();
-                    headers.set(name, value);
-                }
-            });
-        };
-        return headers;
-    }
-    /**
-     * Appends a header to existing list of header values for a given header name.
-     * @param {?} name
-     * @param {?} value
-     * @return {?}
-     */
-    append(name, value) {
-        this.ensureInitialized();
-        if (this.sealed) {
-            throw new Error(HTTP_HEADERS_SEALED_ERR);
-        }
-        const /** @type {?} */ values = this.getAll(name);
-        if (values === null) {
-            this.set(name, value);
-        }
-        else {
-            values.push(value);
-        }
-    }
-    /**
-     * Deletes all header values for the given name.
-     * @param {?} name
-     * @return {?}
-     */
-    delete(name) {
-        this.ensureInitialized();
-        if (this.sealed) {
-            throw new Error(HTTP_HEADERS_SEALED_ERR);
-        }
-        const /** @type {?} */ lcName = name.toLowerCase();
-        this._normalizedNames.delete(lcName);
-        this._headers.delete(lcName);
-    }
-    /**
-     * @param {?} fn
-     * @return {?}
-     */
-    forEach(fn) {
-        this.ensureInitialized();
-        this._headers.forEach((values, lcName) => fn(values, /** @type {?} */ ((this._normalizedNames.get(lcName))), this._headers));
-    }
-    /**
-     * Returns first header that matches given name.
-     * @param {?} name
-     * @return {?}
-     */
-    get(name) {
-        this.ensureInitialized();
-        const /** @type {?} */ values = this.getAll(name);
-        if (values === null) {
-            return null;
-        }
-        return values.length > 0 ? values[0] : null;
-    }
-    /**
-     * Checks for existence of header by given name.
-     * @param {?} name
-     * @return {?}
-     */
-    has(name) {
-        this.ensureInitialized();
-        return this._headers.has(name.toLowerCase());
-    }
-    /**
-     * Returns the names of the headers
-     * @return {?}
-     */
-    keys() {
-        this.ensureInitialized();
-        return Array.from(this._normalizedNames.values());
-    }
-    /**
-     * Sets or overrides header value for given name.
-     * @param {?} name
-     * @param {?} value
-     * @return {?}
-     */
-    set(name, value) {
-        this.ensureInitialized();
-        if (this.sealed) {
-            throw new Error(HTTP_HEADERS_SEALED_ERR);
-        }
-        if (Array.isArray(value)) {
-            if (value.length) {
-                this._headers.set(name.toLowerCase(), [value.join(',')]);
-            }
-        }
-        else {
-            this._headers.set(name.toLowerCase(), [value]);
-        }
-        this.mayBeSetNormalizedName(name);
-    }
-    /**
-     * Returns values of all headers.
-     * @return {?}
-     */
-    values() {
-        this.ensureInitialized();
-        return Array.from(this._headers.values());
-    }
-    /**
-     * @return {?}
-     */
-    toJSON() {
-        this.ensureInitialized();
-        const /** @type {?} */ serialized = {};
-        this._headers.forEach((values, name) => {
-            const /** @type {?} */ split = [];
-            values.forEach(v => split.push(...v.split(',')));
-            serialized[((this._normalizedNames.get(name)))] = split;
-        });
-        return serialized;
-    }
-    /**
-     * Returns list of header values for a given name.
-     * @param {?} name
-     * @return {?}
-     */
-    getAll(name) {
-        this.ensureInitialized();
-        return this.has(name) ? this._headers.get(name.toLowerCase()) || null : null;
-    }
-    /**
-     * This method is not implemented.
-     * @return {?}
-     */
-    entries() { throw new Error('"entries" method is not implemented on ɵHttpHeaders class'); }
-    /**
-     * @return {?}
-     */
-    clone() {
-        const /** @type {?} */ clone = new HttpHeaders();
-        this.forEach((values, name) => { clone.set(name, values); });
-        return clone;
-    }
-    /**
-     * \@internal
-     * @return {?}
-     */
-    seal() { this.sealed = true; }
-    /**
-     * @param {?} name
-     * @return {?}
-     */
-    mayBeSetNormalizedName(name) {
-        const /** @type {?} */ lcName = name.toLowerCase();
-        if (!this._normalizedNames.has(lcName)) {
-            this._normalizedNames.set(lcName, name);
-        }
-    }
-    /**
-     * @return {?}
-     */
-    ensureInitialized() {
-        if (this._lazyInit !== null) {
-            // Set _lazyInit to null first, otherwise lazy initialization
-            // may attempt to call other HttpHeaders methods which will
-            // call ensureInitialized() again.
-            const /** @type {?} */ init = this._lazyInit;
-            this._lazyInit = null;
-            // At the same time, save the sealing state and unseal for the initialization.
-            const /** @type {?} */ sealed = this.sealed;
-            this.sealed = false;
-            init();
-            // Restore sealed state.
-            this.sealed = sealed;
-        }
-    }
-}
-
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- * @param {?=} rawParams
- * @return {?}
- */
-function paramParser(rawParams = '') {
-    const /** @type {?} */ map = new Map();
-    if (rawParams.length > 0) {
-        const /** @type {?} */ params = rawParams.split('&');
-        params.forEach((param) => {
-            const /** @type {?} */ eqIdx = param.indexOf('=');
-            const [key, val] = eqIdx == -1 ? [param, ''] : [param.slice(0, eqIdx), param.slice(eqIdx + 1)];
-            const /** @type {?} */ list = map.get(key) || [];
-            list.push(val);
-            map.set(key, list);
-        });
-    }
-    return map;
-}
-/**
- * \@experimental
- *
- */
-class HttpQueryEncoder {
-    /**
-     * @param {?} k
-     * @return {?}
-     */
-    encodeKey(k) { return standardEncoding(k); }
-    /**
-     * @param {?} v
-     * @return {?}
-     */
-    encodeValue(v) { return standardEncoding(v); }
-}
-/**
- * @param {?} v
- * @return {?}
- */
-function standardEncoding(v) {
-    return encodeURIComponent(v)
-        .replace(/%40/gi, '@')
-        .replace(/%3A/gi, ':')
-        .replace(/%24/gi, '$')
-        .replace(/%2C/gi, ',')
-        .replace(/%3B/gi, ';')
-        .replace(/%2B/gi, '+')
-        .replace(/%3D/gi, '=')
-        .replace(/%3F/gi, '?')
-        .replace(/%2F/gi, '/');
-}
-/**
- * Map-like representation of url search parameters, based on
- * [URLSearchParams](https://url.spec.whatwg.org/#urlsearchparams) in the url living standard,
- * with several extensions for merging URLSearchParams objects:
- *   - setAll()
- *   - appendAll()
- *   - replaceAll()
- *
- * This class accepts an optional second parameter of ${\@link ɵHttpQueryEncoder},
- * which is used to serialize parameters before making a request. By default,
- * `QueryEncoder` encodes keys and values of parameters using `encodeURIComponent`,
- * and then un-encodes certain characters that are allowed to be part of the query
- * according to IETF RFC 3986: https://tools.ietf.org/html/rfc3986.
- *
- * These are the characters that are not encoded: `! $ \' ( ) * + , ; A 9 - . _ ~ ? /`
- *
- * If the set of allowed query characters is not acceptable for a particular backend,
- * `QueryEncoder` can be subclassed and provided as the 2nd argument to URLSearchParams.
- *
- * ```
- * import {URLSearchParams, QueryEncoder} from '\@angular/http';
- * class MyQueryEncoder extends QueryEncoder {
- *   encodeKey(k: string): string {
- *     return myEncodingFunction(k);
- *   }
- *
- *   encodeValue(v: string): string {
- *     return myEncodingFunction(v);
- *   }
- * }
- *
- * let params = new URLSearchParams('', new MyQueryEncoder());
- * ```
- * \@experimental
- */
-class HttpUrlParams {
-    /**
-     * @param {?=} rawParams
-     * @param {?=} queryEncoder
-     */
-    constructor(rawParams = '', queryEncoder = (new HttpQueryEncoder())) {
-        this.rawParams = rawParams;
-        this.queryEncoder = queryEncoder;
-        this.paramsMap = paramParser(rawParams);
-    }
-    /**
-     * @return {?}
-     */
-    clone() {
-        const /** @type {?} */ clone = new HttpUrlParams('', this.queryEncoder);
-        clone.appendAll(this);
-        return clone;
-    }
-    /**
-     * @param {?} param
-     * @return {?}
-     */
-    has(param) { return this.paramsMap.has(param); }
-    /**
-     * @param {?} param
-     * @return {?}
-     */
-    get(param) {
-        const /** @type {?} */ storedParam = this.paramsMap.get(param);
-        return Array.isArray(storedParam) ? storedParam[0] : null;
-    }
-    /**
-     * @param {?} param
-     * @return {?}
-     */
-    getAll(param) { return this.paramsMap.get(param) || []; }
-    /**
-     * @param {?} param
-     * @param {?} val
-     * @return {?}
-     */
-    set(param, val) {
-        if (val === void 0 || val === null) {
-            this.delete(param);
-            return;
-        }
-        const /** @type {?} */ list = this.paramsMap.get(param) || [];
-        list.length = 0;
-        list.push(val);
-        this.paramsMap.set(param, list);
-    }
-    /**
-     * @param {?} searchParams
-     * @return {?}
-     */
-    setAll(searchParams) {
-        searchParams.paramsMap.forEach((value, param) => {
-            const /** @type {?} */ list = this.paramsMap.get(param) || [];
-            list.length = 0;
-            list.push(value[0]);
-            this.paramsMap.set(param, list);
-        });
-    }
-    /**
-     * @param {?} param
-     * @param {?} val
-     * @return {?}
-     */
-    append(param, val) {
-        if (val === void 0 || val === null)
-            return;
-        const /** @type {?} */ list = this.paramsMap.get(param) || [];
-        list.push(val);
-        this.paramsMap.set(param, list);
-    }
-    /**
-     * @param {?} searchParams
-     * @return {?}
-     */
-    appendAll(searchParams) {
-        searchParams.paramsMap.forEach((value, param) => {
-            const /** @type {?} */ list = this.paramsMap.get(param) || [];
-            for (let /** @type {?} */ i = 0; i < value.length; ++i) {
-                list.push(value[i]);
-            }
-            this.paramsMap.set(param, list);
-        });
-    }
-    /**
-     * @param {?} searchParams
-     * @return {?}
-     */
-    replaceAll(searchParams) {
-        searchParams.paramsMap.forEach((value, param) => {
-            const /** @type {?} */ list = this.paramsMap.get(param) || [];
-            list.length = 0;
-            for (let /** @type {?} */ i = 0; i < value.length; ++i) {
-                list.push(value[i]);
-            }
-            this.paramsMap.set(param, list);
-        });
-    }
-    /**
-     * @return {?}
-     */
-    toString() {
-        const /** @type {?} */ paramsList = [];
-        this.paramsMap.forEach((values, k) => {
-            values.forEach(v => paramsList.push(this.queryEncoder.encodeKey(k) + '=' + this.queryEncoder.encodeValue(v)));
-        });
-        return paramsList.join('&');
-    }
-    /**
-     * @param {?} param
-     * @return {?}
-     */
-    delete(param) { this.paramsMap.delete(param); }
-}
-
-/**
  * @license
  * Copyright Google Inc. All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-// headers.ts and url_params.ts are symlinked from @angular/http/client, and are
-// re-exported here with legacy names. This does cause some code duplication if
-// @angular/http and @angular/http/client are used in the same application, but
-// allows for smaller bundles if either is used independently.
 /**
+ * A backend for http that uses the `XMLHttpRequest` browser API.
+ *
+ * Take care not to evaluate this in non-browser contexts.
+ *
  * \@experimental
  */
-const Headers = HttpHeaders;
+class BrowserXhr {
+    constructor() { }
+    /**
+     * @return {?}
+     */
+    build() { return ((new XMLHttpRequest())); }
+}
+BrowserXhr.decorators = [
+    { type: Injectable },
+];
 /**
- * \@experimental
+ * @nocollapse
  */
-const URLSearchParams = HttpUrlParams;
-/**
- * \@experimental
- */
-const QueryEncoder = HttpQueryEncoder;
+BrowserXhr.ctorParameters = () => [];
 
 let RequestMethod = {};
 RequestMethod.Get = 0;
@@ -557,6 +99,193 @@ ResponseContentType[ResponseContentType.Text] = "Text";
 ResponseContentType[ResponseContentType.Json] = "Json";
 ResponseContentType[ResponseContentType.ArrayBuffer] = "ArrayBuffer";
 ResponseContentType[ResponseContentType.Blob] = "Blob";
+
+/**
+ * Polyfill for [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers), as
+ * specified in the [Fetch Spec](https://fetch.spec.whatwg.org/#headers-class).
+ *
+ * The only known difference between this `Headers` implementation and the spec is the
+ * lack of an `entries` method.
+ *
+ * ### Example
+ *
+ * ```
+ * import {Headers} from '\@angular/http';
+ *
+ * var firstHeaders = new Headers();
+ * firstHeaders.append('Content-Type', 'image/jpeg');
+ * console.log(firstHeaders.get('Content-Type')) //'image/jpeg'
+ *
+ * // Create headers from Plain Old JavaScript Object
+ * var secondHeaders = new Headers({
+ *   'X-My-Custom-Header': 'Angular'
+ * });
+ * console.log(secondHeaders.get('X-My-Custom-Header')); //'Angular'
+ *
+ * var thirdHeaders = new Headers(secondHeaders);
+ * console.log(thirdHeaders.get('X-My-Custom-Header')); //'Angular'
+ * ```
+ *
+ * \@experimental
+ */
+class Headers {
+    /**
+     * @param {?=} headers
+     */
+    constructor(headers) {
+        /**
+         * \@internal header names are lower case
+         */
+        this._headers = new Map();
+        /**
+         * \@internal map lower case names to actual names
+         */
+        this._normalizedNames = new Map();
+        if (!headers) {
+            return;
+        }
+        if (headers instanceof Headers) {
+            headers.forEach((values, name) => {
+                values.forEach(value => this.append(name, value));
+            });
+            return;
+        }
+        Object.keys(headers).forEach((name) => {
+            const values = Array.isArray(headers[name]) ? headers[name] : [headers[name]];
+            this.delete(name);
+            values.forEach(value => this.append(name, value));
+        });
+    }
+    /**
+     * Returns a new Headers instance from the given DOMString of Response Headers
+     * @param {?} headersString
+     * @return {?}
+     */
+    static fromResponseHeaderString(headersString) {
+        const /** @type {?} */ headers = new Headers();
+        headersString.split('\n').forEach(line => {
+            const /** @type {?} */ index = line.indexOf(':');
+            if (index > 0) {
+                const /** @type {?} */ name = line.slice(0, index);
+                const /** @type {?} */ value = line.slice(index + 1).trim();
+                headers.set(name, value);
+            }
+        });
+        return headers;
+    }
+    /**
+     * Appends a header to existing list of header values for a given header name.
+     * @param {?} name
+     * @param {?} value
+     * @return {?}
+     */
+    append(name, value) {
+        const /** @type {?} */ values = this.getAll(name);
+        if (values === null) {
+            this.set(name, value);
+        }
+        else {
+            values.push(value);
+        }
+    }
+    /**
+     * Deletes all header values for the given name.
+     * @param {?} name
+     * @return {?}
+     */
+    delete(name) {
+        const /** @type {?} */ lcName = name.toLowerCase();
+        this._normalizedNames.delete(lcName);
+        this._headers.delete(lcName);
+    }
+    /**
+     * @param {?} fn
+     * @return {?}
+     */
+    forEach(fn) {
+        this._headers.forEach((values, lcName) => fn(values, this._normalizedNames.get(lcName), this._headers));
+    }
+    /**
+     * Returns first header that matches given name.
+     * @param {?} name
+     * @return {?}
+     */
+    get(name) {
+        const /** @type {?} */ values = this.getAll(name);
+        if (values === null) {
+            return null;
+        }
+        return values.length > 0 ? values[0] : null;
+    }
+    /**
+     * Checks for existence of header by given name.
+     * @param {?} name
+     * @return {?}
+     */
+    has(name) { return this._headers.has(name.toLowerCase()); }
+    /**
+     * Returns the names of the headers
+     * @return {?}
+     */
+    keys() { return Array.from(this._normalizedNames.values()); }
+    /**
+     * Sets or overrides header value for given name.
+     * @param {?} name
+     * @param {?} value
+     * @return {?}
+     */
+    set(name, value) {
+        if (Array.isArray(value)) {
+            if (value.length) {
+                this._headers.set(name.toLowerCase(), [value.join(',')]);
+            }
+        }
+        else {
+            this._headers.set(name.toLowerCase(), [value]);
+        }
+        this.mayBeSetNormalizedName(name);
+    }
+    /**
+     * Returns values of all headers.
+     * @return {?}
+     */
+    values() { return Array.from(this._headers.values()); }
+    /**
+     * @return {?}
+     */
+    toJSON() {
+        const /** @type {?} */ serialized = {};
+        this._headers.forEach((values, name) => {
+            const /** @type {?} */ split = [];
+            values.forEach(v => split.push(...v.split(',')));
+            serialized[((this._normalizedNames.get(name)))] = split;
+        });
+        return serialized;
+    }
+    /**
+     * Returns list of header values for a given name.
+     * @param {?} name
+     * @return {?}
+     */
+    getAll(name) {
+        return this.has(name) ? this._headers.get(name.toLowerCase()) || null : null;
+    }
+    /**
+     * This method is not implemented.
+     * @return {?}
+     */
+    entries() { throw new Error('"entries" method is not implemented on Headers class'); }
+    /**
+     * @param {?} name
+     * @return {?}
+     */
+    mayBeSetNormalizedName(name) {
+        const /** @type {?} */ lcName = name.toLowerCase();
+        if (!this._normalizedNames.has(lcName)) {
+            this._normalizedNames.set(lcName, name);
+        }
+    }
+}
 
 /**
  * @license
@@ -784,6 +513,24 @@ function normalizeMethodName(method) {
 }
 const isSuccess = (status) => (status >= 200 && status < 300);
 /**
+ * @param {?} xhr
+ * @return {?}
+ */
+function getResponseURL(xhr) {
+    if ('responseURL' in xhr) {
+        return xhr.responseURL;
+    }
+    if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+        return xhr.getResponseHeader('X-Request-URL');
+    }
+    return null;
+}
+/**
+ * @param {?} input
+ * @return {?}
+ */
+
+/**
  * @param {?} input
  * @return {?}
  */
@@ -794,10 +541,215 @@ function stringToArrayBuffer(input) {
     }
     return view.buffer;
 }
+
 /**
- * @param {?} input
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ * @param {?=} rawParams
  * @return {?}
  */
+function paramParser(rawParams = '') {
+    const /** @type {?} */ map = new Map();
+    if (rawParams.length > 0) {
+        const /** @type {?} */ params = rawParams.split('&');
+        params.forEach((param) => {
+            const /** @type {?} */ eqIdx = param.indexOf('=');
+            const [key, val] = eqIdx == -1 ? [param, ''] : [param.slice(0, eqIdx), param.slice(eqIdx + 1)];
+            const /** @type {?} */ list = map.get(key) || [];
+            list.push(val);
+            map.set(key, list);
+        });
+    }
+    return map;
+}
+/**
+ * \@experimental
+ *
+ */
+class QueryEncoder {
+    /**
+     * @param {?} k
+     * @return {?}
+     */
+    encodeKey(k) { return standardEncoding(k); }
+    /**
+     * @param {?} v
+     * @return {?}
+     */
+    encodeValue(v) { return standardEncoding(v); }
+}
+/**
+ * @param {?} v
+ * @return {?}
+ */
+function standardEncoding(v) {
+    return encodeURIComponent(v)
+        .replace(/%40/gi, '@')
+        .replace(/%3A/gi, ':')
+        .replace(/%24/gi, '$')
+        .replace(/%2C/gi, ',')
+        .replace(/%3B/gi, ';')
+        .replace(/%2B/gi, '+')
+        .replace(/%3D/gi, '=')
+        .replace(/%3F/gi, '?')
+        .replace(/%2F/gi, '/');
+}
+/**
+ * Map-like representation of url search parameters, based on
+ * [URLSearchParams](https://url.spec.whatwg.org/#urlsearchparams) in the url living standard,
+ * with several extensions for merging URLSearchParams objects:
+ *   - setAll()
+ *   - appendAll()
+ *   - replaceAll()
+ *
+ * This class accepts an optional second parameter of ${\@link QueryEncoder},
+ * which is used to serialize parameters before making a request. By default,
+ * `QueryEncoder` encodes keys and values of parameters using `encodeURIComponent`,
+ * and then un-encodes certain characters that are allowed to be part of the query
+ * according to IETF RFC 3986: https://tools.ietf.org/html/rfc3986.
+ *
+ * These are the characters that are not encoded: `! $ \' ( ) * + , ; A 9 - . _ ~ ? /`
+ *
+ * If the set of allowed query characters is not acceptable for a particular backend,
+ * `QueryEncoder` can be subclassed and provided as the 2nd argument to URLSearchParams.
+ *
+ * ```
+ * import {URLSearchParams, QueryEncoder} from '\@angular/http';
+ * class MyQueryEncoder extends QueryEncoder {
+ *   encodeKey(k: string): string {
+ *     return myEncodingFunction(k);
+ *   }
+ *
+ *   encodeValue(v: string): string {
+ *     return myEncodingFunction(v);
+ *   }
+ * }
+ *
+ * let params = new URLSearchParams('', new MyQueryEncoder());
+ * ```
+ * \@experimental
+ */
+class URLSearchParams {
+    /**
+     * @param {?=} rawParams
+     * @param {?=} queryEncoder
+     */
+    constructor(rawParams = '', queryEncoder = new QueryEncoder()) {
+        this.rawParams = rawParams;
+        this.queryEncoder = queryEncoder;
+        this.paramsMap = paramParser(rawParams);
+    }
+    /**
+     * @return {?}
+     */
+    clone() {
+        const /** @type {?} */ clone = new URLSearchParams('', this.queryEncoder);
+        clone.appendAll(this);
+        return clone;
+    }
+    /**
+     * @param {?} param
+     * @return {?}
+     */
+    has(param) { return this.paramsMap.has(param); }
+    /**
+     * @param {?} param
+     * @return {?}
+     */
+    get(param) {
+        const /** @type {?} */ storedParam = this.paramsMap.get(param);
+        return Array.isArray(storedParam) ? storedParam[0] : null;
+    }
+    /**
+     * @param {?} param
+     * @return {?}
+     */
+    getAll(param) { return this.paramsMap.get(param) || []; }
+    /**
+     * @param {?} param
+     * @param {?} val
+     * @return {?}
+     */
+    set(param, val) {
+        if (val === void 0 || val === null) {
+            this.delete(param);
+            return;
+        }
+        const /** @type {?} */ list = this.paramsMap.get(param) || [];
+        list.length = 0;
+        list.push(val);
+        this.paramsMap.set(param, list);
+    }
+    /**
+     * @param {?} searchParams
+     * @return {?}
+     */
+    setAll(searchParams) {
+        searchParams.paramsMap.forEach((value, param) => {
+            const /** @type {?} */ list = this.paramsMap.get(param) || [];
+            list.length = 0;
+            list.push(value[0]);
+            this.paramsMap.set(param, list);
+        });
+    }
+    /**
+     * @param {?} param
+     * @param {?} val
+     * @return {?}
+     */
+    append(param, val) {
+        if (val === void 0 || val === null)
+            return;
+        const /** @type {?} */ list = this.paramsMap.get(param) || [];
+        list.push(val);
+        this.paramsMap.set(param, list);
+    }
+    /**
+     * @param {?} searchParams
+     * @return {?}
+     */
+    appendAll(searchParams) {
+        searchParams.paramsMap.forEach((value, param) => {
+            const /** @type {?} */ list = this.paramsMap.get(param) || [];
+            for (let /** @type {?} */ i = 0; i < value.length; ++i) {
+                list.push(value[i]);
+            }
+            this.paramsMap.set(param, list);
+        });
+    }
+    /**
+     * @param {?} searchParams
+     * @return {?}
+     */
+    replaceAll(searchParams) {
+        searchParams.paramsMap.forEach((value, param) => {
+            const /** @type {?} */ list = this.paramsMap.get(param) || [];
+            list.length = 0;
+            for (let /** @type {?} */ i = 0; i < value.length; ++i) {
+                list.push(value[i]);
+            }
+            this.paramsMap.set(param, list);
+        });
+    }
+    /**
+     * @return {?}
+     */
+    toString() {
+        const /** @type {?} */ paramsList = [];
+        this.paramsMap.forEach((values, k) => {
+            values.forEach(v => paramsList.push(this.queryEncoder.encodeKey(k) + '=' + this.queryEncoder.encodeValue(v)));
+        });
+        return paramsList.join('&');
+    }
+    /**
+     * @param {?} param
+     * @return {?}
+     */
+    delete(param) { this.paramsMap.delete(param); }
+}
 
 /**
  * @license
@@ -1170,40 +1122,6 @@ JSONPBackend_.ctorParameters = () => [
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/**
- * @param {?} xhr
- * @return {?}
- */
-function getResponseUrl(xhr) {
-    if ('responseURL' in xhr) {
-        return xhr.responseURL;
-    }
-    if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
-        return xhr.getResponseHeader('X-Request-URL');
-    }
-    return null;
-}
-/**
- * A backend for http that uses the `XMLHttpRequest` browser API.
- *
- * Take care not to evaluate this in non-browser contexts.
- *
- * \@experimental
- */
-class BrowserXhr {
-    constructor() { }
-    /**
-     * @return {?}
-     */
-    build() { return ((new XMLHttpRequest())); }
-}
-BrowserXhr.decorators = [
-    { type: Injectable },
-];
-/**
- * @nocollapse
- */
-BrowserXhr.ctorParameters = () => [];
 const XSSI_PREFIX = /^\)\]\}',?\n/;
 /**
  * Creates connections using `XMLHttpRequest`. Given a fully-qualified
@@ -1253,7 +1171,7 @@ class XHRConnection {
                 }
                 const headers = Headers.fromResponseHeaderString(_xhr.getAllResponseHeaders());
                 // IE 9 does not provide the way to get URL of response
-                const url = getResponseUrl(_xhr) || req.url;
+                const url = getResponseURL(_xhr) || req.url;
                 const statusText = _xhr.statusText || 'OK';
                 let responseOptions = new ResponseOptions({ body, status, headers, statusText, url });
                 if (baseResponseOptions != null) {
@@ -2170,7 +2088,7 @@ JsonpModule.ctorParameters = () => [];
 /**
  * \@stable
  */
-const VERSION = new Version('4.2.2-350f3a8b49');
+const VERSION = new Version('4.3.0-beta.1-7cf4e7c0a5');
 
 /**
  * @license
@@ -2179,11 +2097,25 @@ const VERSION = new Version('4.2.2-350f3a8b49');
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-// Old API surface:
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @module
+ * @description
+ * Entry point for all public APIs of the http package.
+ */
+
+// This file only reexports content of the `src` folder. Keep it that way.
 
 /**
  * Generated bundle index. Do not edit.
  */
 
-export { JSONPBackend, JSONPConnection, BrowserXhr, CookieXSRFStrategy, XHRBackend, XHRConnection, BaseRequestOptions, RequestOptions, BaseResponseOptions, ResponseOptions, Headers, QueryEncoder, URLSearchParams, ReadyState, RequestMethod, ResponseContentType, ResponseType, Http, Jsonp, HttpModule, JsonpModule, Connection, ConnectionBackend, XSRFStrategy, Request, Response, VERSION, BrowserJsonp as ɵg, JSONPBackend_ as ɵa, Body as ɵf, _createDefaultCookieXSRFStrategy as ɵb, httpFactory as ɵc, jsonpFactory as ɵd };
+export { BrowserXhr, JSONPBackend, JSONPConnection, CookieXSRFStrategy, XHRBackend, XHRConnection, BaseRequestOptions, RequestOptions, BaseResponseOptions, ResponseOptions, ReadyState, RequestMethod, ResponseContentType, ResponseType, Headers, Http, Jsonp, HttpModule, JsonpModule, Connection, ConnectionBackend, XSRFStrategy, Request, Response, QueryEncoder, URLSearchParams, VERSION, BrowserJsonp as ɵg, JSONPBackend_ as ɵa, Body as ɵf, _createDefaultCookieXSRFStrategy as ɵb, httpFactory as ɵc, jsonpFactory as ɵd };
 //# sourceMappingURL=http.js.map

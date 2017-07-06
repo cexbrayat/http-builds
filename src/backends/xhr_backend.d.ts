@@ -4,17 +4,7 @@ import { ReadyState } from '../enums';
 import { Connection, ConnectionBackend, XSRFStrategy } from '../interfaces';
 import { Request } from '../static_request';
 import { Response } from '../static_response';
-/**
- * A backend for http that uses the `XMLHttpRequest` browser API.
- *
- * Take care not to evaluate this in non-browser contexts.
- *
- * @experimental
- */
-export declare class BrowserXhr {
-    constructor();
-    build(): any;
-}
+import { BrowserXhr } from './browser_xhr';
 /**
  * Creates connections using `XMLHttpRequest`. Given a fully-qualified
  * request, an `XHRConnection` will immediately create an `XMLHttpRequest` object and send the

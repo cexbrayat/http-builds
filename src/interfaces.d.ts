@@ -5,9 +5,10 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Headers, URLSearchParams } from './client';
 import { ReadyState, RequestMethod, ResponseContentType, ResponseType } from './enums';
+import { Headers } from './headers';
 import { Request } from './static_request';
+import { URLSearchParams } from './url_search_params';
 /**
  * Abstract class from which real backends are derived.
  *

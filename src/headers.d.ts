@@ -6,10 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * @experimental
- */
-export declare const HTTP_HEADERS_SEALED_ERR = "Headers have been sealed and cannot be mutated.";
-/**
  * Polyfill for [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers), as
  * specified in the [Fetch Spec](https://fetch.spec.whatwg.org/#headers-class).
  *
@@ -37,15 +33,14 @@ export declare const HTTP_HEADERS_SEALED_ERR = "Headers have been sealed and can
  *
  * @experimental
  */
-export declare class HttpHeaders {
-    private _lazyInit;
-    constructor(headers?: HttpHeaders | {
+export declare class Headers {
+    constructor(headers?: Headers | {
         [name: string]: any;
     } | null);
     /**
      * Returns a new Headers instance from the given DOMString of Response Headers
      */
-    static fromResponseHeaderString(headersString: string): HttpHeaders;
+    static fromResponseHeaderString(headersString: string): Headers;
     /**
      * Appends a header to existing list of header values for a given header name.
      */
@@ -54,7 +49,7 @@ export declare class HttpHeaders {
      * Deletes all header values for the given name.
      */
     delete(name: string): void;
-    forEach(fn: (values: string[], name: string, headers: Map<string, string[]>) => void): void;
+    forEach(fn: (values: string[], name: string | undefined, headers: Map<string, string[]>) => void): void;
     /**
      * Returns first header that matches given name.
      */
@@ -89,7 +84,5 @@ export declare class HttpHeaders {
      * This method is not implemented.
      */
     entries(): void;
-    clone(): HttpHeaders;
     private mayBeSetNormalizedName(name);
-    private ensureInitialized();
 }

@@ -1,7 +1,7 @@
 /**
  * @experimental
  **/
-export declare class HttpQueryEncoder {
+export declare class QueryEncoder {
     encodeKey(k: string): string;
     encodeValue(v: string): string;
 }
@@ -13,7 +13,7 @@ export declare class HttpQueryEncoder {
  *   - appendAll()
  *   - replaceAll()
  *
- * This class accepts an optional second parameter of ${@link ɵHttpQueryEncoder},
+ * This class accepts an optional second parameter of ${@link QueryEncoder},
  * which is used to serialize parameters before making a request. By default,
  * `QueryEncoder` encodes keys and values of parameters using `encodeURIComponent`,
  * and then un-encodes certain characters that are allowed to be part of the query
@@ -40,20 +40,20 @@ export declare class HttpQueryEncoder {
  * ```
  * @experimental
  */
-export declare class HttpUrlParams {
+export declare class URLSearchParams {
     rawParams: string;
     private queryEncoder;
     paramsMap: Map<string, string[]>;
-    constructor(rawParams?: string, queryEncoder?: any);
-    clone(): HttpUrlParams;
+    constructor(rawParams?: string, queryEncoder?: QueryEncoder);
+    clone(): URLSearchParams;
     has(param: string): boolean;
     get(param: string): string | null;
     getAll(param: string): string[];
     set(param: string, val: string): void;
-    setAll(searchParams: HttpUrlParams): void;
+    setAll(searchParams: URLSearchParams): void;
     append(param: string, val: string): void;
-    appendAll(searchParams: HttpUrlParams): void;
-    replaceAll(searchParams: HttpUrlParams): void;
+    appendAll(searchParams: URLSearchParams): void;
+    replaceAll(searchParams: URLSearchParams): void;
     toString(): string;
     delete(param: string): void;
 }

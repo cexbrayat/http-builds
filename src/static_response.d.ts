@@ -7,8 +7,8 @@
  */
 import { ResponseOptions } from './base_response_options';
 import { Body } from './body';
-import { Headers } from './client';
 import { ResponseType } from './enums';
+import { Headers } from './headers';
 /**
  * Creates `Response` instances from provided values.
  *

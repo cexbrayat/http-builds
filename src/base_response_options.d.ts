@@ -1,4 +1,4 @@
-import { Headers } from './client';
+import { Headers } from './headers';
 import { ResponseOptionsArgs } from './interfaces';
 /**
  * Creates a response options object to be optionally provided when instantiating a

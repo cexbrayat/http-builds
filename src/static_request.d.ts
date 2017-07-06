@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Body } from './body';
-import { Headers } from './client';
 import { ContentType, RequestMethod, ResponseContentType } from './enums';
+import { Headers } from './headers';
 import { RequestArgs } from './interfaces';
 /**
  * Creates `Request` instances from provided values.
