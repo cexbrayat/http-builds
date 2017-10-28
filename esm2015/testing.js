@@ -1,5 +1,5 @@
 /**
- * @license Angular v5.0.0-beta.4-97c69744f
+ * @license Angular v5.0.0-rc.7-170f5c0c5
  * (c) 2010-2017 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -24,14 +24,14 @@ import { take } from 'rxjs/operator/take';
  *
  * Mock Connection to represent a {\@link Connection} for tests.
  *
- * \@experimental
+ * @deprecated use \@angular/common/http instead
  */
 class MockConnection {
     /**
      * @param {?} req
      */
     constructor(req) {
-        this.response = (take.call(new ReplaySubject(1), 1));
+        this.response = /** @type {?} */ (take.call(new ReplaySubject(1), 1));
         this.readyState = ReadyState.Open;
         this.request = req;
     }
@@ -182,7 +182,7 @@ class MockConnection {
  *
  * This method only exists in the mock implementation, not in real Backends.
  *
- * \@experimental
+ * @deprecated use \@angular/common/http instead
  */
 class MockBackend {
     constructor() {
@@ -265,7 +265,7 @@ MockBackend.ctorParameters = () => [];
 /**
  * @module
  * @description
- * Entry point for all public APIs of the http testing package.
+ * Entry point for all public APIs of this package.
  */
 
 /**
