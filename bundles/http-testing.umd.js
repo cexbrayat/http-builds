@@ -1,22 +1,22 @@
 /**
- * @license Angular v5.1.0-beta.0-21bfaf226
- * (c) 2010-2017 Google, Inc. https://angular.io/
+ * @license Angular v7.0.0-beta.4-a2418a9037
+ * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/http'), require('rxjs/ReplaySubject'), require('rxjs/Subject'), require('rxjs/operator/take')) :
-	typeof define === 'function' && define.amd ? define('@angular/http/testing', ['exports', '@angular/core', '@angular/http', 'rxjs/ReplaySubject', 'rxjs/Subject', 'rxjs/operator/take'], factory) :
-	(factory((global.ng = global.ng || {}, global.ng.http = global.ng.http || {}, global.ng.http.testing = {}),global.ng.core,global.ng.http,global.Rx,global.Rx,global.Rx.Observable.prototype));
-}(this, (function (exports,_angular_core,_angular_http,rxjs_ReplaySubject,rxjs_Subject,rxjs_operator_take) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/http'), require('rxjs'), require('rxjs/operators')) :
+	typeof define === 'function' && define.amd ? define('@angular/http/testing', ['exports', '@angular/core', '@angular/http', 'rxjs', 'rxjs/operators'], factory) :
+	(factory((global.ng = global.ng || {}, global.ng.http = global.ng.http || {}, global.ng.http.testing = {}),global.ng.core,global.ng.http,global.rxjs,global.rxjs.operators));
+}(this, (function (exports,_angular_core,_angular_http,rxjs,rxjs_operators) { 'use strict';
 
 /**
- * @license Angular v5.1.0-beta.0-21bfaf226
- * (c) 2010-2017 Google, Inc. https://angular.io/
+ * @license Angular v7.0.0-beta.4-a2418a9037
+ * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /**
  * @license
@@ -29,11 +29,11 @@
  *
  * Mock Connection to represent a {\@link Connection} for tests.
  *
- * @deprecated use \@angular/common/http instead
+ * @deprecated see https://angular.io/guide/http
  */
-var MockConnection = (function () {
+var MockConnection = /** @class */ (function () {
     function MockConnection(req) {
-        this.response = /** @type {?} */ (rxjs_operator_take.take.call(new rxjs_ReplaySubject.ReplaySubject(1), 1));
+        this.response = /** @type {?} */ (new rxjs.ReplaySubject(1).pipe(rxjs_operators.take(1)));
         this.readyState = _angular_http.ReadyState.Open;
         this.request = req;
     }
@@ -251,7 +251,7 @@ var MockConnection = (function () {
  *        this.heroService.getHeroes()
  *            .then((heroes: String[]) => result = heroes)
  *            .catch((error: any) => catchedError = error);
- *        this.lastConnection.mockRespond(new Response(new ResponseOptions({
+ *        this.lastConnection.mockError(new Response(new ResponseOptions({
  *          status: 404,
  *          statusText: 'URL not Found',
  *        })));
@@ -264,15 +264,15 @@ var MockConnection = (function () {
  *
  * This method only exists in the mock implementation, not in real Backends.
  *
- * @deprecated use \@angular/common/http instead
+ * @deprecated see https://angular.io/guide/http
  */
-var MockBackend = (function () {
+var MockBackend = /** @class */ (function () {
     function MockBackend() {
         var _this = this;
         this.connectionsArray = [];
-        this.connections = new rxjs_Subject.Subject();
+        this.connections = new rxjs.Subject();
         this.connections.subscribe(function (connection) { return _this.connectionsArray.push(connection); });
-        this.pendingConnections = new rxjs_Subject.Subject();
+        this.pendingConnections = new rxjs.Subject();
     }
     /**
      * Checks all connections, and raises an exception if any connection has not received a response.
@@ -292,7 +292,8 @@ var MockBackend = (function () {
      * @return {?}
      */
     function () {
-        var /** @type {?} */ pending = 0;
+        /** @type {?} */
+        var pending = 0;
         this.pendingConnections.subscribe(function (c) { return pending++; });
         if (pending > 0)
             throw new Error(pending + " pending connections to be resolved");
@@ -344,7 +345,8 @@ var MockBackend = (function () {
         if (!req || !(req instanceof _angular_http.Request)) {
             throw new Error("createConnection requires an instance of Request, got " + req);
         }
-        var /** @type {?} */ connection = new MockConnection(req);
+        /** @type {?} */
+        var connection = new MockConnection(req);
         this.connections.next(connection);
         return connection;
     };
