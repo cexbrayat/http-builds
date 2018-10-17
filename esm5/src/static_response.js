@@ -18,6 +18,7 @@ import { Body } from './body';
  * usually instantiated by end-users, it is the primary object interacted with when it comes time to
  * add data to a view.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -38,6 +39,7 @@ var /**
  * usually instantiated by end-users, it is the primary object interacted with when it comes time to
  * add data to a view.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -82,6 +84,7 @@ Response = /** @class */ (function (_super) {
  * usually instantiated by end-users, it is the primary object interacted with when it comes time to
  * add data to a view.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```

@@ -1,5 +1,5 @@
 /**
- * @license Angular v7.0.0-beta.4-a2418a9037
+ * @license Angular v7.0.0-rc.1-1c561a833c
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -141,6 +141,7 @@ ResponseContentType[ResponseContentType.Blob] = 'Blob';
  * The only known difference between this `Headers` implementation and the spec is the
  * lack of an `entries` method.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -357,6 +358,7 @@ class Headers {
  * This class may be used in tests to build {\@link Response Responses} for
  * mock responses (see {\@link MockBackend}).
  *
+ * \@usageNotes
  * ### Example
  *
  * ```typescript
@@ -394,6 +396,7 @@ class ResponseOptions {
      * This may be useful when sharing a base `ResponseOptions` object inside tests,
      * where certain properties may change from test to test.
      *
+     * \@usageNotes
      * ### Example
      *
      * ```typescript
@@ -434,6 +437,7 @@ class ResponseOptions {
  * when configuring an {\@link Injector}, in order to override the default options
  * used by {\@link Http} to create {\@link Response Responses}.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```typescript
@@ -647,15 +651,15 @@ function paramParser(rawParams = '') {
  */
 class QueryEncoder {
     /**
-     * @param {?} k
+     * @param {?} key
      * @return {?}
      */
-    encodeKey(k) { return standardEncoding(k); }
+    encodeKey(key) { return standardEncoding(key); }
     /**
-     * @param {?} v
+     * @param {?} value
      * @return {?}
      */
-    encodeValue(v) { return standardEncoding(v); }
+    encodeValue(value) { return standardEncoding(value); }
 }
 /**
  * @param {?} v
@@ -946,6 +950,7 @@ class Body {
  * usually instantiated by end-users, it is the primary object interacted with when it comes time to
  * add data to a view.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -1420,6 +1425,7 @@ class CookieXSRFStrategy {
  * overridden if a different backend implementation should be used,
  * such as in a node backend.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -1904,6 +1910,7 @@ function mergeOptions(defaultOpts, providedOpts, method, url) {
  * `request` returns an `Observable` which will emit a single {\@link Response} when a
  * response is received.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```typescript
@@ -2210,7 +2217,7 @@ JsonpModule.decorators = [
 /** *
  * @deprecated see https://angular.io/guide/http
   @type {?} */
-const VERSION = new Version('7.0.0-beta.4-a2418a9037');
+const VERSION = new Version('7.0.0-rc.1-1c561a833c');
 
 /**
  * @fileoverview added by tsickle

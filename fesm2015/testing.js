@@ -1,5 +1,5 @@
 /**
- * @license Angular v7.0.0-beta.4-a2418a9037
+ * @license Angular v7.0.0-rc.1-1c561a833c
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -23,6 +23,26 @@ import { take } from 'rxjs/operators';
  *
  * Mock Connection to represent a {\@link Connection} for tests.
  *
+ * \@usageNotes
+ * ### Example of `mockRespond()`
+ *
+ * ```
+ * var connection;
+ * backend.connections.subscribe(c => connection = c);
+ * http.request('data.json').subscribe(res => console.log(res.text()));
+ * connection.mockRespond(new Response(new ResponseOptions({ body: 'fake response' }))); //logs
+ * 'fake response'
+ * ```
+ *
+ * ### Example of `mockError()`
+ *
+ * ```
+ * var connection;
+ * backend.connections.subscribe(c => connection = c);
+ * http.request('data.json').subscribe(res => res, err => console.log(err)));
+ * connection.mockError(new Error('error'));
+ * ```
+ *
  * @deprecated see https://angular.io/guide/http
  */
 class MockConnection {
@@ -37,16 +57,6 @@ class MockConnection {
     /**
      * Sends a mock response to the connection. This response is the value that is emitted to the
      * {\@link EventEmitter} returned by {\@link Http}.
-     *
-     * ### Example
-     *
-     * ```
-     * var connection;
-     * backend.connections.subscribe(c => connection = c);
-     * http.request('data.json').subscribe(res => console.log(res.text()));
-     * connection.mockRespond(new Response(new ResponseOptions({ body: 'fake response' }))); //logs
-     * 'fake response'
-     * ```
      *
      * @param {?} res
      * @return {?}
@@ -78,15 +88,6 @@ class MockConnection {
      * returned
      * from {\@link Http}.
      *
-     * ### Example
-     *
-     * ```
-     * var connection;
-     * backend.connections.subscribe(c => connection = c);
-     * http.request('data.json').subscribe(res => res, err => console.log(err)));
-     * connection.mockError(new Error('error'));
-     * ```
-     *
      * @param {?=} err
      * @return {?}
      */
@@ -102,6 +103,7 @@ class MockConnection {
  * This class can be injected in tests, and should be used to override providers
  * to other backends, such as {\@link XHRBackend}.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -178,8 +180,6 @@ class MockConnection {
  *      }));
  * });
  * ```
- *
- * This method only exists in the mock implementation, not in real Backends.
  *
  * @deprecated see https://angular.io/guide/http
  */

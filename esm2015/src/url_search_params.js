@@ -37,15 +37,15 @@ function paramParser(rawParams = '') {
  */
 export class QueryEncoder {
     /**
-     * @param {?} k
+     * @param {?} key
      * @return {?}
      */
-    encodeKey(k) { return standardEncoding(k); }
+    encodeKey(key) { return standardEncoding(key); }
     /**
-     * @param {?} v
+     * @param {?} value
      * @return {?}
      */
-    encodeValue(v) { return standardEncoding(v); }
+    encodeValue(value) { return standardEncoding(value); }
 }
 /**
  * @param {?} v

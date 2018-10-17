@@ -44,23 +44,23 @@ QueryEncoder = /** @class */ (function () {
     function QueryEncoder() {
     }
     /**
-     * @param {?} k
+     * @param {?} key
      * @return {?}
      */
     QueryEncoder.prototype.encodeKey = /**
-     * @param {?} k
+     * @param {?} key
      * @return {?}
      */
-    function (k) { return standardEncoding(k); };
+    function (key) { return standardEncoding(key); };
     /**
-     * @param {?} v
+     * @param {?} value
      * @return {?}
      */
     QueryEncoder.prototype.encodeValue = /**
-     * @param {?} v
+     * @param {?} value
      * @return {?}
      */
-    function (v) { return standardEncoding(v); };
+    function (value) { return standardEncoding(value); };
     return QueryEncoder;
 }());
 /**

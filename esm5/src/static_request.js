@@ -118,14 +118,11 @@ Request = /** @class */ (function (_super) {
                     prefix = (_this.url[_this.url.length - 1] == '&') ? '' : '&';
                 }
                 // TODO: just delete search-query-looking string in url?
-                // TODO: just delete search-query-looking string in url?
                 _this.url = url + prefix + params;
             }
         }
         _this._body = requestOptions.body;
         _this.method = normalizeMethodName(/** @type {?} */ ((requestOptions.method)));
-        // TODO(jeffbcross): implement behavior
-        // Defaults to 'omit', consistent with browser
         // TODO(jeffbcross): implement behavior
         // Defaults to 'omit', consistent with browser
         _this.headers = new Headers(requestOptions.headers);

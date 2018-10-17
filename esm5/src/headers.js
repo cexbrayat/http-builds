@@ -16,6 +16,7 @@
  * The only known difference between this `Headers` implementation and the spec is the
  * lack of an `entries` method.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -44,6 +45,7 @@ var /**
  * The only known difference between this `Headers` implementation and the spec is the
  * lack of an `entries` method.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -339,6 +341,7 @@ Headers = /** @class */ (function () {
  * The only known difference between this `Headers` implementation and the spec is the
  * lack of an `entries` method.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```

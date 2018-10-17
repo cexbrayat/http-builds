@@ -1,5 +1,5 @@
 /**
- * @license Angular v7.0.0-beta.4-a2418a9037
+ * @license Angular v7.0.0-rc.1-1c561a833c
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -39,7 +39,7 @@ function __extends(d, b) {
 }
 
 /**
- * @license Angular v7.0.0-beta.4-a2418a9037
+ * @license Angular v7.0.0-rc.1-1c561a833c
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -182,6 +182,7 @@ ResponseContentType[ResponseContentType.Blob] = 'Blob';
  * The only known difference between this `Headers` implementation and the spec is the
  * lack of an `entries` method.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -495,6 +496,7 @@ var Headers = /** @class */ (function () {
  * This class may be used in tests to build {\@link Response Responses} for
  * mock responses (see {\@link MockBackend}).
  *
+ * \@usageNotes
  * ### Example
  *
  * ```typescript
@@ -530,6 +532,7 @@ var ResponseOptions = /** @class */ (function () {
      * This may be useful when sharing a base `ResponseOptions` object inside tests,
      * where certain properties may change from test to test.
      *
+     * @usageNotes
      * ### Example
      *
      * ```typescript
@@ -555,6 +558,7 @@ var ResponseOptions = /** @class */ (function () {
      * This may be useful when sharing a base `ResponseOptions` object inside tests,
      * where certain properties may change from test to test.
      *
+     * \@usageNotes
      * ### Example
      *
      * ```typescript
@@ -582,6 +586,7 @@ var ResponseOptions = /** @class */ (function () {
      * This may be useful when sharing a base `ResponseOptions` object inside tests,
      * where certain properties may change from test to test.
      *
+     * \@usageNotes
      * ### Example
      *
      * ```typescript
@@ -623,6 +628,7 @@ var ResponseOptions = /** @class */ (function () {
  * when configuring an {\@link Injector}, in order to override the default options
  * used by {\@link Http} to create {\@link Response Responses}.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```typescript
@@ -850,23 +856,23 @@ var QueryEncoder = /** @class */ (function () {
     function QueryEncoder() {
     }
     /**
-     * @param {?} k
+     * @param {?} key
      * @return {?}
      */
     QueryEncoder.prototype.encodeKey = /**
-     * @param {?} k
+     * @param {?} key
      * @return {?}
      */
-    function (k) { return standardEncoding(k); };
+    function (key) { return standardEncoding(key); };
     /**
-     * @param {?} v
+     * @param {?} value
      * @return {?}
      */
     QueryEncoder.prototype.encodeValue = /**
-     * @param {?} v
+     * @param {?} value
      * @return {?}
      */
-    function (v) { return standardEncoding(v); };
+    function (value) { return standardEncoding(value); };
     return QueryEncoder;
 }());
 /**
@@ -1280,6 +1286,7 @@ var Body = /** @class */ (function () {
  * usually instantiated by end-users, it is the primary object interacted with when it comes time to
  * add data to a view.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -1806,6 +1813,7 @@ var CookieXSRFStrategy = /** @class */ (function () {
  * overridden if a different backend implementation should be used,
  * such as in a node backend.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```
@@ -2201,14 +2209,11 @@ var Request = /** @class */ (function (_super) {
                     prefix = (_this.url[_this.url.length - 1] == '&') ? '' : '&';
                 }
                 // TODO: just delete search-query-looking string in url?
-                // TODO: just delete search-query-looking string in url?
                 _this.url = url + prefix + params;
             }
         }
         _this._body = requestOptions.body;
         _this.method = normalizeMethodName(/** @type {?} */ ((requestOptions.method)));
-        // TODO(jeffbcross): implement behavior
-        // Defaults to 'omit', consistent with browser
         // TODO(jeffbcross): implement behavior
         // Defaults to 'omit', consistent with browser
         _this.headers = new Headers(requestOptions.headers);
@@ -2394,6 +2399,7 @@ function mergeOptions(defaultOpts, providedOpts, method, url) {
  * `request` returns an `Observable` which will emit a single {\@link Response} when a
  * response is received.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```typescript
@@ -2813,7 +2819,7 @@ var JsonpModule = /** @class */ (function () {
 /** *
  * @deprecated see https://angular.io/guide/http
   @type {?} */
-var VERSION = new _angular_core.Version('7.0.0-beta.4-a2418a9037');
+var VERSION = new _angular_core.Version('7.0.0-rc.1-1c561a833c');
 
 exports.BrowserXhr = BrowserXhr;
 exports.JSONPBackend = JSONPBackend;

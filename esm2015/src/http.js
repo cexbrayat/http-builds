@@ -54,6 +54,7 @@ function mergeOptions(defaultOpts, providedOpts, method, url) {
  * `request` returns an `Observable` which will emit a single {\@link Response} when a
  * response is received.
  *
+ * \@usageNotes
  * ### Example
  *
  * ```typescript
